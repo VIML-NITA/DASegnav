@@ -30,7 +30,7 @@ Note: Make sure you mmcv version is compatible with your pytorch and cuda versio
 
 ### Step 3: Installing SegNav
 ```
-git clone https://github.com/rayguan97/SegNav.git
+git clone https://github.com/VIML-NITA/SegNav.git
 cd SegNav
 pip install einops prettytable
 pip install -e . 
