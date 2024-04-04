@@ -129,7 +129,5 @@ Please read `./tools/test.py` for more details.
 
 This project is released under the [Apache 2.0 license](LICENSE).
 
-# Acknowledgement
 
-The source code of GANav is heavily based on [MMSegmentation](https://github.com/open-mmlab/mmsegmentation). 
 
