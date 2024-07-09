@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/models/ours_class_att.py', '../_base_/datasets/rellis_group6_new.py',
+    '../_base_/models/ganav_light_fast_scnn_6.py', '../_base_/datasets/rellis_group6_new.py',
     '../_base_/default_runtime.py'
 ]
 
@@ -8,9 +8,9 @@ optimizer = dict(type='SGD', lr=0.003, momentum=0.9, weight_decay=4e-5)
 optimizer_config = dict()
 # learning policy
 # runtime settings
-runner = dict(type='IterBasedRunner', max_iters=240000)
-total_iters = 240000
-checkpoint_config = dict(by_epoch=False, interval=16000)
+runner = dict(type='IterBasedRunner', max_iters=24000)
+total_iters = 24000
+checkpoint_config = dict(by_epoch=False, interval=1600)
 evaluation = dict(interval=240000, metric='mIoU')
 
 # optimizer
@@ -24,7 +24,7 @@ model=dict(
 
 data = dict(
     samples_per_gpu=2,
-    workers_per_gpu=2)
+    workers_per_gpu=6)
 
 
 

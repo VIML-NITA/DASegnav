@@ -26,28 +26,24 @@ def main():
         help='Color palette used for segmentation map')
     args = parser.parse_args()
 
-
     model = init_segmentor(args.config, args.checkpoint, device=args.device)
     img = mmcv.imread(args.img)
 
     result = inference_segmentor(model, img)
 
     # show_result_pyplot(model, args.img , result, get_palette(args.palette), save_dir="./vis/pred.png", display=args.d, seg_only=True)
-    show_result_pyplot(model, args.img , result, get_palette(args.palette))
-
-
+    show_result_pyplot(model, args.img, result, get_palette(args.palette))
 
 
 if __name__ == '__main__':
     main()
 
 
-
 # ------note by TG -------
-# 
-# Run this command 
-# 
+#
+# Run this command
+#
 #  python ./tools/visualize.py ./c3.png ./work_dirs/ganav_group6_rugd_new3/ganav_group6_rugd_new3.py \
-        #   ./work_dirs/ganav_group6_rugd_new3/latest.pth
+    #   ./work_dirs/ganav_group6_rugd_new3/latest.pth
 
 # first is the input image(has to be .png), second the config file, third the model

@@ -10,7 +10,9 @@ from mmengine.registry import init_default_scope
 from mmengine.utils import mkdir_or_exist, progressbar
 from PIL import Image
 
-from ..mmseg.datasets import DATASETS
+from mmseg.datasets import DATASETS
+
+# from ..mmseg.datasets import build_dataset
 
 init_default_scope('mmseg')
 

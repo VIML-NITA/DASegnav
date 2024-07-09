@@ -1,0 +1,20 @@
+{
+    "config": "./work_dirs/segnav_cfg/segnav_cfg.py",
+    "metric": {
+        "aAcc": 0.93,
+        "mIoU": 0.8645999999999999,
+        "mAcc": 0.9222,
+        "IoU.background": 0.7851000213623047,
+        "IoU.stable": 0.9323999786376953,
+        "IoU.granular": 0.8277999877929687,
+        "IoU.poor foothold": 0.8798999786376953,
+        "IoU.high resistance": 0.8522000122070312,
+        "IoU.obstacle": 0.910199966430664,
+        "Acc.background": 0.8484999847412109,
+        "Acc.stable": 0.9695999908447266,
+        "Acc.granular": 0.8931999969482421,
+        "Acc.poor foothold": 0.9341999816894532,
+        "Acc.high resistance": 0.9276999664306641,
+        "Acc.obstacle": 0.9601000213623047
+    }
+}

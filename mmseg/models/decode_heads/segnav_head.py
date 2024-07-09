@@ -60,7 +60,7 @@ class Mlp(nn.Module):
         x = self.fc2(x)
         x = self.drop(x)
         return x
-    
+
 class CatKey(nn.Module):
     def __init__(self, pool_ratio=[1,2,4,8], dim=[256,160,64,32]):
         super().__init__()
@@ -155,7 +155,7 @@ class CrossAttention(nn.Module):
             x_ = self.act(y)
         else:
             x_ = y
-            
+
         kv = self.kv(x_).reshape(B1, -1, 2, self.num_heads, C1 // self.num_heads).permute(2, 0, 3, 1, 4) #여기에다가 rollout을 넣는다면?
         k, v = kv[0], kv[1]
 
@@ -293,7 +293,7 @@ class APFormerHead(BaseDecodeHead):
         x = self.linear_pred(x)
 
         return x
-    
+
 @MODELS.register_module()
 class APFormerHead2(BaseDecodeHead):
     """
@@ -379,7 +379,7 @@ class APFormerHead2(BaseDecodeHead):
         x = self.linear_pred(x)
 
         return x
-    
+
 @MODELS.register_module()
 class APFormerHead2_rebuttal(BaseDecodeHead): #near stage only for Rebuttal (i.e. Defense)
     """

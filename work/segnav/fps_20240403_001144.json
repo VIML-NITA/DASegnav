@@ -1,0 +1,7 @@
+{
+    "config": "./work_dirs/segnav_cfg/segnav_cfg.py",
+    "unit": "img / s",
+    "overall_fps_1": 19.19,
+    "average_fps": 19.19,
+    "fps_variance": 0.0
+}

@@ -1,0 +1,1482 @@
+2024-03-31 22:52:02,920 - mmseg - INFO - Multi-processing start method is `None`
+2024-03-31 22:52:02,920 - mmseg - INFO - OpenCV num_threads is `<built-in function getNumThreads>
+2024-03-31 22:52:02,975 - mmseg - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.7.12 | packaged by conda-forge | (default, Oct 26 2021, 06:08:21) [GCC 9.4.0]
+CUDA available: True
+GPU 0: NVIDIA GeForce RTX 3050 Laptop GPU
+CUDA_HOME: /usr/local/cuda
+NVCC: Build cuda_12.4.r12.4/compiler.33961263_0
+GCC: gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+PyTorch: 1.10.0
+PyTorch compiling details: PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) oneAPI Math Kernel Library Version 2021.4-Product Build 20210904 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.2.3 (Git Hash 7336ca9f055cf1bfa13efb658fe15dc9b41f0740)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX512
+  - CUDA Runtime 11.3
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_37,code=compute_37
+  - CuDNN 8.2
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.3, CUDNN_VERSION=8.2.0, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -DEDGE_PROFILER_USE_KINETO -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.10.0, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+TorchVision: 0.11.1
+OpenCV: 4.9.0
+MMCV: 1.3.16
+MMCV Compiler: GCC 7.3
+MMCV CUDA Compiler: 11.3
+MMSegmentation: 0.21.0+0b320dd
+------------------------------------------------------------
+
+2024-03-31 22:52:02,975 - mmseg - INFO - Distributed training: False
+2024-03-31 22:52:03,281 - mmseg - INFO - Config:
+norm_cfg = dict(type='SyncBN', requires_grad=True)
+model = dict(
+    type='EncoderDecoder',
+    backbone=dict(
+        type='MixVisionTransformer',
+        in_channels=3,
+        embed_dims=128,
+        num_stages=4,
+        num_layers=[2, 2, 2, 2],
+        num_heads=[1, 2, 5, 8],
+        patch_sizes=[7, 3, 3, 3],
+        sr_ratios=[8, 4, 2, 1],
+        out_indices=(0, 1, 2, 3),
+        mlp_ratio=4,
+        qkv_bias=True,
+        drop_rate=0.1,
+        attn_drop_rate=0.0,
+        drop_path_rate=0.1),
+    decode_head=dict(
+        type='APFormerHead',
+        feature_strides=[2, 4, 8, 16],
+        in_channels=[128, 256, 640, 1024],
+        in_index=[0, 1, 2, 3],
+        channels=512,
+        num_classes=6),
+    auxiliary_head=[
+        dict(
+            type='FCNHead',
+            in_channels=640,
+            channels=32,
+            num_convs=1,
+            num_classes=6,
+            in_index=-2,
+            norm_cfg=dict(type='SyncBN', requires_grad=True),
+            concat_input=False,
+            align_corners=False,
+            loss_decode=dict(
+                type='DiceLoss', use_sigmoid=True, loss_weight=0.4)),
+        dict(
+            type='FCNHead',
+            in_channels=256,
+            channels=32,
+            num_convs=1,
+            num_classes=6,
+            in_index=-3,
+            norm_cfg=dict(type='SyncBN', requires_grad=True),
+            concat_input=False,
+            align_corners=False,
+            loss_decode=dict(
+                type='CrossEntropyLoss', use_sigmoid=True, loss_weight=0.4))
+    ],
+    train_cfg=dict(),
+    test_cfg=dict(mode='whole'))
+dataset_type = 'RUGDDataset_Group6_New2'
+data_root = 'data/rugd/'
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+img_size = (688, 550)
+crop_size = (300, 375)
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations'),
+    dict(type='Resize', img_scale=(688, 550), ratio_range=(0.5, 2.0)),
+    dict(type='RandomCrop', crop_size=(300, 375), cat_max_ratio=0.75),
+    dict(type='RandomFlip', prob=0.5),
+    dict(type='PhotoMetricDistortion'),
+    dict(
+        type='Normalize',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        to_rgb=True),
+    dict(type='Pad', size=(300, 375), pad_val=0, seg_pad_val=255),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_semantic_seg'])
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(300, 375),
+        flip=False,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='RandomFlip'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size=(300, 375), pad_val=0, seg_pad_val=255),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img'])
+        ])
+]
+data = dict(
+    samples_per_gpu=2,
+    workers_per_gpu=6,
+    img_size=(300, 375),
+    train=dict(
+        type='RUGDDataset_Group6_New2',
+        data_root='data/rugd/',
+        img_dir='RUGD_frames-with-annotations',
+        ann_dir='RUGD_annotations',
+        split='train_ours.txt',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='LoadAnnotations'),
+            dict(type='Resize', img_scale=(688, 550), ratio_range=(0.5, 2.0)),
+            dict(type='RandomCrop', crop_size=(300, 375), cat_max_ratio=0.75),
+            dict(type='RandomFlip', prob=0.5),
+            dict(type='PhotoMetricDistortion'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size=(300, 375), pad_val=0, seg_pad_val=255),
+            dict(type='DefaultFormatBundle'),
+            dict(type='Collect', keys=['img', 'gt_semantic_seg'])
+        ]),
+    val=dict(
+        type='RUGDDataset_Group6_New2',
+        data_root='data/rugd/',
+        img_dir='RUGD_frames-with-annotations',
+        ann_dir='RUGD_annotations',
+        split='val_ours.txt',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(300, 375),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(
+                        type='Pad',
+                        size=(300, 375),
+                        pad_val=0,
+                        seg_pad_val=255),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]),
+    test=dict(
+        type='RUGDDataset_Group6_New2',
+        data_root='data/rugd/',
+        img_dir='RUGD_frames-with-annotations',
+        ann_dir='RUGD_annotations',
+        split='test_ours.txt',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(300, 375),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(
+                        type='Pad',
+                        size=(300, 375),
+                        pad_val=0,
+                        seg_pad_val=255),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]))
+log_config = dict(
+    interval=50, hooks=[dict(type='TextLoggerHook', by_epoch=False)])
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = None
+resume_from = None
+workflow = [('train', 1)]
+cudnn_benchmark = True
+optimizer = dict(type='SGD', lr=0.093, weight_decay=4e-05)
+optimizer_config = dict()
+runner = dict(type='IterBasedRunner', max_iters=240000)
+total_iters = 240000
+checkpoint_config = dict(by_epoch=False, interval=16000)
+evaluation = dict(interval=240000, metric='mIoU')
+lr_config = dict(
+    policy='poly',
+    power=0.9,
+    min_lr=1e-06,
+    warmup='linear',
+    warmup_iters=1500,
+    warmup_ratio=1e-06,
+    by_epoch=False)
+loss_decode = dict(type='DiceLoss', use_sigmoid=True, loss_weight=1.0)
+work_dir = './work_dirs/segnav_cfg'
+gpu_ids = [0]
+auto_resume = False
+
+2024-03-31 22:52:03,282 - mmseg - INFO - Set random seed to 1707607922, deterministic: False
+2024-03-31 22:52:04,749 - mmseg - INFO - initialize APFormerHead with init_cfg {'type': 'Normal', 'std': 0.01, 'override': {'name': 'conv_seg'}}
+Name of parameter - Initialization information
+
+backbone.layers.0.0.projection.weight - torch.Size([128, 3, 7, 7]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.0.projection.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.0.norm.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.0.norm.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.0.norm1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.0.norm1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.0.attn.attn.in_proj_weight - torch.Size([384, 128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.0.attn.attn.in_proj_bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.0.attn.attn.out_proj.weight - torch.Size([128, 128]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.0.attn.attn.out_proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.0.attn.sr.weight - torch.Size([128, 128, 8, 8]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.0.attn.sr.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.0.attn.norm.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.0.attn.norm.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.0.norm2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.0.norm2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.0.ffn.layers.0.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.0.ffn.layers.0.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.0.ffn.layers.1.weight - torch.Size([512, 1, 3, 3]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.0.ffn.layers.1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.0.ffn.layers.4.weight - torch.Size([128, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.0.ffn.layers.4.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.1.norm1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.1.norm1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.1.attn.attn.in_proj_weight - torch.Size([384, 128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.1.attn.attn.in_proj_bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.1.attn.attn.out_proj.weight - torch.Size([128, 128]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.1.attn.attn.out_proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.1.attn.sr.weight - torch.Size([128, 128, 8, 8]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.1.attn.sr.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.1.attn.norm.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.1.attn.norm.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.1.norm2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.1.norm2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.1.1.ffn.layers.0.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.1.ffn.layers.0.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.1.ffn.layers.1.weight - torch.Size([512, 1, 3, 3]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.1.ffn.layers.1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.1.ffn.layers.4.weight - torch.Size([128, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.1.1.ffn.layers.4.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.0.2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.0.2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.0.projection.weight - torch.Size([256, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.0.projection.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.0.norm.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.0.norm.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.0.norm1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.0.norm1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.0.attn.attn.in_proj_weight - torch.Size([768, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.0.attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.0.attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.0.attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.0.attn.sr.weight - torch.Size([256, 256, 4, 4]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.0.attn.sr.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.0.attn.norm.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.0.attn.norm.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.0.norm2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.0.norm2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.0.ffn.layers.0.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.0.ffn.layers.0.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.0.ffn.layers.1.weight - torch.Size([1024, 1, 3, 3]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.0.ffn.layers.1.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.0.ffn.layers.4.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.0.ffn.layers.4.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.1.norm1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.1.norm1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.1.attn.attn.in_proj_weight - torch.Size([768, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.1.attn.attn.in_proj_bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.1.attn.attn.out_proj.weight - torch.Size([256, 256]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.1.attn.attn.out_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.1.attn.sr.weight - torch.Size([256, 256, 4, 4]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.1.attn.sr.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.1.attn.norm.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.1.attn.norm.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.1.norm2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.1.norm2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.1.1.ffn.layers.0.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.1.ffn.layers.0.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.1.ffn.layers.1.weight - torch.Size([1024, 1, 3, 3]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.1.ffn.layers.1.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.1.ffn.layers.4.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.1.1.ffn.layers.4.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.1.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.1.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.0.projection.weight - torch.Size([640, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.0.projection.bias - torch.Size([640]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.0.norm.weight - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.0.norm.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.0.norm1.weight - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.0.norm1.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.0.attn.attn.in_proj_weight - torch.Size([1920, 640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.0.attn.attn.in_proj_bias - torch.Size([1920]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.0.attn.attn.out_proj.weight - torch.Size([640, 640]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.0.attn.attn.out_proj.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.0.attn.sr.weight - torch.Size([640, 640, 2, 2]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.0.attn.sr.bias - torch.Size([640]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.0.attn.norm.weight - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.0.attn.norm.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.0.norm2.weight - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.0.norm2.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.0.ffn.layers.0.weight - torch.Size([2560, 640, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.0.ffn.layers.0.bias - torch.Size([2560]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.0.ffn.layers.1.weight - torch.Size([2560, 1, 3, 3]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.0.ffn.layers.1.bias - torch.Size([2560]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.0.ffn.layers.4.weight - torch.Size([640, 2560, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.0.ffn.layers.4.bias - torch.Size([640]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.1.norm1.weight - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.1.norm1.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.1.attn.attn.in_proj_weight - torch.Size([1920, 640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.1.attn.attn.in_proj_bias - torch.Size([1920]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.1.attn.attn.out_proj.weight - torch.Size([640, 640]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.1.attn.attn.out_proj.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.1.attn.sr.weight - torch.Size([640, 640, 2, 2]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.1.attn.sr.bias - torch.Size([640]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.1.attn.norm.weight - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.1.attn.norm.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.1.norm2.weight - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.1.norm2.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.1.1.ffn.layers.0.weight - torch.Size([2560, 640, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.1.ffn.layers.0.bias - torch.Size([2560]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.1.ffn.layers.1.weight - torch.Size([2560, 1, 3, 3]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.1.ffn.layers.1.bias - torch.Size([2560]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.1.ffn.layers.4.weight - torch.Size([640, 2560, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.1.1.ffn.layers.4.bias - torch.Size([640]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.2.2.weight - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.2.2.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.0.projection.weight - torch.Size([1024, 640, 3, 3]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.0.projection.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.0.norm.weight - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.0.norm.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.0.norm1.weight - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.0.norm1.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.0.attn.attn.in_proj_weight - torch.Size([3072, 1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.0.attn.attn.in_proj_bias - torch.Size([3072]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.0.attn.attn.out_proj.weight - torch.Size([1024, 1024]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.0.attn.attn.out_proj.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.0.norm2.weight - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.0.norm2.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.0.ffn.layers.0.weight - torch.Size([4096, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.0.ffn.layers.0.bias - torch.Size([4096]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.0.ffn.layers.1.weight - torch.Size([4096, 1, 3, 3]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.0.ffn.layers.1.bias - torch.Size([4096]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.0.ffn.layers.4.weight - torch.Size([1024, 4096, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.0.ffn.layers.4.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.1.norm1.weight - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.1.norm1.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.1.attn.attn.in_proj_weight - torch.Size([3072, 1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.1.attn.attn.in_proj_bias - torch.Size([3072]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.1.attn.attn.out_proj.weight - torch.Size([1024, 1024]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.1.attn.attn.out_proj.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.1.norm2.weight - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.1.norm2.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.1.1.ffn.layers.0.weight - torch.Size([4096, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.1.ffn.layers.0.bias - torch.Size([4096]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.1.ffn.layers.1.weight - torch.Size([4096, 1, 3, 3]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.1.ffn.layers.1.bias - torch.Size([4096]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.1.ffn.layers.4.weight - torch.Size([1024, 4096, 1, 1]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.1.1.ffn.layers.4.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in MixVisionTransformer  
+
+backbone.layers.3.2.weight - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+backbone.layers.3.2.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.conv_seg.weight - torch.Size([6, 512, 1, 1]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+decode_head.conv_seg.bias - torch.Size([6]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+decode_head.attn_c4.norm1.weight - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.norm1.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.norm2.weight - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.norm2.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.norm3.weight - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.norm3.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.attn.q.weight - torch.Size([1024, 1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.attn.kv.weight - torch.Size([2048, 2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.attn.proj.weight - torch.Size([1024, 1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.attn.proj.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.attn.sr.weight - torch.Size([2048, 2048, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.attn.sr.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.attn.norm.weight - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.attn.norm.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.mlp.fc1.weight - torch.Size([4096, 1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.mlp.fc1.bias - torch.Size([4096]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.mlp.dwconv.dwconv.weight - torch.Size([4096, 1, 3, 3]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.mlp.dwconv.dwconv.bias - torch.Size([4096]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.mlp.fc2.weight - torch.Size([1024, 4096]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c4.mlp.fc2.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.norm1.weight - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.norm1.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.norm2.weight - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.norm2.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.norm3.weight - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.norm3.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.attn.q.weight - torch.Size([640, 640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.attn.kv.weight - torch.Size([1280, 2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.attn.proj.weight - torch.Size([640, 640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.attn.proj.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.attn.sr.weight - torch.Size([2048, 2048, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.attn.sr.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.attn.norm.weight - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.attn.norm.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.mlp.fc1.weight - torch.Size([2560, 640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.mlp.fc1.bias - torch.Size([2560]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.mlp.dwconv.dwconv.weight - torch.Size([2560, 1, 3, 3]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.mlp.dwconv.dwconv.bias - torch.Size([2560]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.mlp.fc2.weight - torch.Size([640, 2560]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c3.mlp.fc2.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.norm1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.norm1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.norm2.weight - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.norm2.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.norm3.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.norm3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.attn.q.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.attn.kv.weight - torch.Size([512, 2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.attn.proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.attn.proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.attn.sr.weight - torch.Size([2048, 2048, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.attn.sr.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.attn.norm.weight - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.attn.norm.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.mlp.fc1.weight - torch.Size([1024, 256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.mlp.fc1.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.mlp.dwconv.dwconv.weight - torch.Size([1024, 1, 3, 3]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.mlp.dwconv.dwconv.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.mlp.fc2.weight - torch.Size([256, 1024]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c2.mlp.fc2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.norm1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.norm1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.norm2.weight - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.norm2.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.norm3.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.norm3.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.attn.q.weight - torch.Size([128, 128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.attn.kv.weight - torch.Size([256, 2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.attn.proj.weight - torch.Size([128, 128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.attn.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.attn.sr.weight - torch.Size([2048, 2048, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.attn.sr.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.attn.norm.weight - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.attn.norm.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.mlp.fc1.weight - torch.Size([512, 128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.mlp.fc1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.mlp.dwconv.dwconv.weight - torch.Size([512, 1, 3, 3]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.mlp.dwconv.dwconv.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.mlp.fc2.weight - torch.Size([128, 512]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.attn_c1.mlp.fc2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.cat_key.sr_list.0.weight - torch.Size([640, 640, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.cat_key.sr_list.0.bias - torch.Size([640]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.cat_key.sr_list.1.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.cat_key.sr_list.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.cat_key.sr_list.2.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.cat_key.sr_list.2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.linear_fuse.conv.weight - torch.Size([128, 2048, 1, 1]): 
+Initialized by user-defined `init_weights` in ConvModule  
+
+decode_head.linear_fuse.bn.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.linear_fuse.bn.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.linear_pred.weight - torch.Size([6, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+decode_head.linear_pred.bias - torch.Size([6]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.0.conv_seg.weight - torch.Size([6, 32, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.0.conv_seg.bias - torch.Size([6]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.0.convs.0.conv.weight - torch.Size([32, 640, 3, 3]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.0.convs.0.bn.weight - torch.Size([32]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.0.convs.0.bn.bias - torch.Size([32]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.1.conv_seg.weight - torch.Size([6, 32, 1, 1]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.1.conv_seg.bias - torch.Size([6]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.1.convs.0.conv.weight - torch.Size([32, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.1.convs.0.bn.weight - torch.Size([32]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+
+auxiliary_head.1.convs.0.bn.bias - torch.Size([32]): 
+The value is the same before and after calling `init_weights` of EncoderDecoder  
+2024-03-31 22:52:04,789 - mmseg - INFO - EncoderDecoder(
+  (backbone): MixVisionTransformer(
+    (layers): ModuleList(
+      (0): ModuleList(
+        (0): PatchEmbed(
+          (projection): Conv2d(3, 128, kernel_size=(7, 7), stride=(4, 4), padding=(3, 3))
+          (norm): LayerNorm((128,), eps=1e-06, elementwise_affine=True)
+        )
+        (1): ModuleList(
+          (0): TransformerEncoderLayer(
+            (norm1): LayerNorm((128,), eps=1e-06, elementwise_affine=True)
+            (attn): EfficientMultiheadAttention(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=128, out_features=128, bias=True)
+              )
+              (proj_drop): Dropout(p=0.1, inplace=False)
+              (dropout_layer): DropPath()
+              (sr): Conv2d(128, 128, kernel_size=(8, 8), stride=(8, 8))
+              (norm): LayerNorm((128,), eps=1e-06, elementwise_affine=True)
+            )
+            (norm2): LayerNorm((128,), eps=1e-06, elementwise_affine=True)
+            (ffn): MixFFN(
+              (activate): GELU()
+              (layers): Sequential(
+                (0): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1))
+                (1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512)
+                (2): GELU()
+                (3): Dropout(p=0.1, inplace=False)
+                (4): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1))
+                (5): Dropout(p=0.1, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (1): TransformerEncoderLayer(
+            (norm1): LayerNorm((128,), eps=1e-06, elementwise_affine=True)
+            (attn): EfficientMultiheadAttention(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=128, out_features=128, bias=True)
+              )
+              (proj_drop): Dropout(p=0.1, inplace=False)
+              (dropout_layer): DropPath()
+              (sr): Conv2d(128, 128, kernel_size=(8, 8), stride=(8, 8))
+              (norm): LayerNorm((128,), eps=1e-06, elementwise_affine=True)
+            )
+            (norm2): LayerNorm((128,), eps=1e-06, elementwise_affine=True)
+            (ffn): MixFFN(
+              (activate): GELU()
+              (layers): Sequential(
+                (0): Conv2d(128, 512, kernel_size=(1, 1), stride=(1, 1))
+                (1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512)
+                (2): GELU()
+                (3): Dropout(p=0.1, inplace=False)
+                (4): Conv2d(512, 128, kernel_size=(1, 1), stride=(1, 1))
+                (5): Dropout(p=0.1, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+        )
+        (2): LayerNorm((128,), eps=1e-06, elementwise_affine=True)
+      )
+      (1): ModuleList(
+        (0): PatchEmbed(
+          (projection): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+          (norm): LayerNorm((256,), eps=1e-06, elementwise_affine=True)
+        )
+        (1): ModuleList(
+          (0): TransformerEncoderLayer(
+            (norm1): LayerNorm((256,), eps=1e-06, elementwise_affine=True)
+            (attn): EfficientMultiheadAttention(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (proj_drop): Dropout(p=0.1, inplace=False)
+              (dropout_layer): DropPath()
+              (sr): Conv2d(256, 256, kernel_size=(4, 4), stride=(4, 4))
+              (norm): LayerNorm((256,), eps=1e-06, elementwise_affine=True)
+            )
+            (norm2): LayerNorm((256,), eps=1e-06, elementwise_affine=True)
+            (ffn): MixFFN(
+              (activate): GELU()
+              (layers): Sequential(
+                (0): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1))
+                (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024)
+                (2): GELU()
+                (3): Dropout(p=0.1, inplace=False)
+                (4): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1))
+                (5): Dropout(p=0.1, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (1): TransformerEncoderLayer(
+            (norm1): LayerNorm((256,), eps=1e-06, elementwise_affine=True)
+            (attn): EfficientMultiheadAttention(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+              )
+              (proj_drop): Dropout(p=0.1, inplace=False)
+              (dropout_layer): DropPath()
+              (sr): Conv2d(256, 256, kernel_size=(4, 4), stride=(4, 4))
+              (norm): LayerNorm((256,), eps=1e-06, elementwise_affine=True)
+            )
+            (norm2): LayerNorm((256,), eps=1e-06, elementwise_affine=True)
+            (ffn): MixFFN(
+              (activate): GELU()
+              (layers): Sequential(
+                (0): Conv2d(256, 1024, kernel_size=(1, 1), stride=(1, 1))
+                (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024)
+                (2): GELU()
+                (3): Dropout(p=0.1, inplace=False)
+                (4): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1))
+                (5): Dropout(p=0.1, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+        )
+        (2): LayerNorm((256,), eps=1e-06, elementwise_affine=True)
+      )
+      (2): ModuleList(
+        (0): PatchEmbed(
+          (projection): Conv2d(256, 640, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+          (norm): LayerNorm((640,), eps=1e-06, elementwise_affine=True)
+        )
+        (1): ModuleList(
+          (0): TransformerEncoderLayer(
+            (norm1): LayerNorm((640,), eps=1e-06, elementwise_affine=True)
+            (attn): EfficientMultiheadAttention(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=640, out_features=640, bias=True)
+              )
+              (proj_drop): Dropout(p=0.1, inplace=False)
+              (dropout_layer): DropPath()
+              (sr): Conv2d(640, 640, kernel_size=(2, 2), stride=(2, 2))
+              (norm): LayerNorm((640,), eps=1e-06, elementwise_affine=True)
+            )
+            (norm2): LayerNorm((640,), eps=1e-06, elementwise_affine=True)
+            (ffn): MixFFN(
+              (activate): GELU()
+              (layers): Sequential(
+                (0): Conv2d(640, 2560, kernel_size=(1, 1), stride=(1, 1))
+                (1): Conv2d(2560, 2560, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=2560)
+                (2): GELU()
+                (3): Dropout(p=0.1, inplace=False)
+                (4): Conv2d(2560, 640, kernel_size=(1, 1), stride=(1, 1))
+                (5): Dropout(p=0.1, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (1): TransformerEncoderLayer(
+            (norm1): LayerNorm((640,), eps=1e-06, elementwise_affine=True)
+            (attn): EfficientMultiheadAttention(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=640, out_features=640, bias=True)
+              )
+              (proj_drop): Dropout(p=0.1, inplace=False)
+              (dropout_layer): DropPath()
+              (sr): Conv2d(640, 640, kernel_size=(2, 2), stride=(2, 2))
+              (norm): LayerNorm((640,), eps=1e-06, elementwise_affine=True)
+            )
+            (norm2): LayerNorm((640,), eps=1e-06, elementwise_affine=True)
+            (ffn): MixFFN(
+              (activate): GELU()
+              (layers): Sequential(
+                (0): Conv2d(640, 2560, kernel_size=(1, 1), stride=(1, 1))
+                (1): Conv2d(2560, 2560, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=2560)
+                (2): GELU()
+                (3): Dropout(p=0.1, inplace=False)
+                (4): Conv2d(2560, 640, kernel_size=(1, 1), stride=(1, 1))
+                (5): Dropout(p=0.1, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+        )
+        (2): LayerNorm((640,), eps=1e-06, elementwise_affine=True)
+      )
+      (3): ModuleList(
+        (0): PatchEmbed(
+          (projection): Conv2d(640, 1024, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+          (norm): LayerNorm((1024,), eps=1e-06, elementwise_affine=True)
+        )
+        (1): ModuleList(
+          (0): TransformerEncoderLayer(
+            (norm1): LayerNorm((1024,), eps=1e-06, elementwise_affine=True)
+            (attn): EfficientMultiheadAttention(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=1024, out_features=1024, bias=True)
+              )
+              (proj_drop): Dropout(p=0.1, inplace=False)
+              (dropout_layer): DropPath()
+            )
+            (norm2): LayerNorm((1024,), eps=1e-06, elementwise_affine=True)
+            (ffn): MixFFN(
+              (activate): GELU()
+              (layers): Sequential(
+                (0): Conv2d(1024, 4096, kernel_size=(1, 1), stride=(1, 1))
+                (1): Conv2d(4096, 4096, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=4096)
+                (2): GELU()
+                (3): Dropout(p=0.1, inplace=False)
+                (4): Conv2d(4096, 1024, kernel_size=(1, 1), stride=(1, 1))
+                (5): Dropout(p=0.1, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+          (1): TransformerEncoderLayer(
+            (norm1): LayerNorm((1024,), eps=1e-06, elementwise_affine=True)
+            (attn): EfficientMultiheadAttention(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=1024, out_features=1024, bias=True)
+              )
+              (proj_drop): Dropout(p=0.1, inplace=False)
+              (dropout_layer): DropPath()
+            )
+            (norm2): LayerNorm((1024,), eps=1e-06, elementwise_affine=True)
+            (ffn): MixFFN(
+              (activate): GELU()
+              (layers): Sequential(
+                (0): Conv2d(1024, 4096, kernel_size=(1, 1), stride=(1, 1))
+                (1): Conv2d(4096, 4096, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=4096)
+                (2): GELU()
+                (3): Dropout(p=0.1, inplace=False)
+                (4): Conv2d(4096, 1024, kernel_size=(1, 1), stride=(1, 1))
+                (5): Dropout(p=0.1, inplace=False)
+              )
+              (dropout_layer): DropPath()
+            )
+          )
+        )
+        (2): LayerNorm((1024,), eps=1e-06, elementwise_affine=True)
+      )
+    )
+  )
+  (decode_head): APFormerHead(
+    input_transform=multiple_select, ignore_index=255, align_corners=False
+    (loss_decode): CrossEntropyLoss()
+    (conv_seg): Conv2d(512, 6, kernel_size=(1, 1), stride=(1, 1))
+    (dropout): Dropout2d(p=0.1, inplace=False)
+    (attn_c4): Block(
+      (norm1): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+      (norm2): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+      (norm3): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+      (attn): CrossAttention(
+        (q): Linear(in_features=1024, out_features=1024, bias=False)
+        (kv): Linear(in_features=2048, out_features=2048, bias=False)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=1024, out_features=1024, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+        (pool): AvgPool2d(kernel_size=8, stride=8, padding=0)
+        (sr): Conv2d(2048, 2048, kernel_size=(1, 1), stride=(1, 1))
+        (norm): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+        (act): GELU()
+      )
+      (drop_path): DropPath(drop_prob=0.100)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=1024, out_features=4096, bias=True)
+        (dwconv): DWConv(
+          (dwconv): Conv2d(4096, 4096, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=4096)
+        )
+        (act): GELU()
+        (fc2): Linear(in_features=4096, out_features=1024, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+    (attn_c3): Block(
+      (norm1): LayerNorm((640,), eps=1e-05, elementwise_affine=True)
+      (norm2): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+      (norm3): LayerNorm((640,), eps=1e-05, elementwise_affine=True)
+      (attn): CrossAttention(
+        (q): Linear(in_features=640, out_features=640, bias=False)
+        (kv): Linear(in_features=2048, out_features=1280, bias=False)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=640, out_features=640, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+        (pool): AvgPool2d(kernel_size=4, stride=4, padding=0)
+        (sr): Conv2d(2048, 2048, kernel_size=(1, 1), stride=(1, 1))
+        (norm): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+        (act): GELU()
+      )
+      (drop_path): DropPath(drop_prob=0.100)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=640, out_features=2560, bias=True)
+        (dwconv): DWConv(
+          (dwconv): Conv2d(2560, 2560, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=2560)
+        )
+        (act): GELU()
+        (fc2): Linear(in_features=2560, out_features=640, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+    (attn_c2): Block(
+      (norm1): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+      (norm2): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+      (norm3): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+      (attn): CrossAttention(
+        (q): Linear(in_features=256, out_features=256, bias=False)
+        (kv): Linear(in_features=2048, out_features=512, bias=False)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=256, out_features=256, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+        (pool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        (sr): Conv2d(2048, 2048, kernel_size=(1, 1), stride=(1, 1))
+        (norm): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+        (act): GELU()
+      )
+      (drop_path): DropPath(drop_prob=0.100)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=256, out_features=1024, bias=True)
+        (dwconv): DWConv(
+          (dwconv): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=1024)
+        )
+        (act): GELU()
+        (fc2): Linear(in_features=1024, out_features=256, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+    (attn_c1): Block(
+      (norm1): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+      (norm2): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+      (norm3): LayerNorm((128,), eps=1e-05, elementwise_affine=True)
+      (attn): CrossAttention(
+        (q): Linear(in_features=128, out_features=128, bias=False)
+        (kv): Linear(in_features=2048, out_features=256, bias=False)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=128, out_features=128, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+        (pool): AvgPool2d(kernel_size=1, stride=1, padding=0)
+        (sr): Conv2d(2048, 2048, kernel_size=(1, 1), stride=(1, 1))
+        (norm): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+        (act): GELU()
+      )
+      (drop_path): DropPath(drop_prob=0.100)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=128, out_features=512, bias=True)
+        (dwconv): DWConv(
+          (dwconv): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=512)
+        )
+        (act): GELU()
+        (fc2): Linear(in_features=512, out_features=128, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+    (cat_key): CatKey(
+      (sr_list): ModuleList(
+        (0): Conv2d(640, 640, kernel_size=(1, 1), stride=(1, 1))
+        (1): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1))
+        (2): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1))
+      )
+      (pool_list): ModuleList(
+        (0): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        (1): AvgPool2d(kernel_size=4, stride=4, padding=0)
+        (2): AvgPool2d(kernel_size=8, stride=8, padding=0)
+      )
+    )
+    (linear_fuse): ConvModule(
+      (conv): Conv2d(2048, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      (bn): _BatchNormXd(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (activate): ReLU(inplace=True)
+    )
+    (linear_pred): Conv2d(128, 6, kernel_size=(1, 1), stride=(1, 1))
+  )
+  init_cfg={'type': 'Normal', 'std': 0.01, 'override': {'name': 'conv_seg'}}
+  (auxiliary_head): ModuleList(
+    (0): FCNHead(
+      input_transform=None, ignore_index=255, align_corners=False
+      (loss_decode): DiceLoss()
+      (conv_seg): Conv2d(32, 6, kernel_size=(1, 1), stride=(1, 1))
+      (dropout): Dropout2d(p=0.1, inplace=False)
+      (convs): Sequential(
+        (0): ConvModule(
+          (conv): Conv2d(640, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn): _BatchNormXd(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (activate): ReLU(inplace=True)
+        )
+      )
+    )
+    init_cfg={'type': 'Normal', 'std': 0.01, 'override': {'name': 'conv_seg'}}
+    (1): FCNHead(
+      input_transform=None, ignore_index=255, align_corners=False
+      (loss_decode): CrossEntropyLoss()
+      (conv_seg): Conv2d(32, 6, kernel_size=(1, 1), stride=(1, 1))
+      (dropout): Dropout2d(p=0.1, inplace=False)
+      (convs): Sequential(
+        (0): ConvModule(
+          (conv): Conv2d(256, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn): _BatchNormXd(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (activate): ReLU(inplace=True)
+        )
+      )
+    )
+    init_cfg={'type': 'Normal', 'std': 0.01, 'override': {'name': 'conv_seg'}}
+  )
+)
+2024-03-31 22:52:04,801 - mmseg - INFO - Loaded 5210 images
+2024-03-31 22:52:07,857 - mmseg - INFO - Loaded 1401 images
+2024-03-31 22:52:07,857 - mmseg - INFO - Start running, host: rickky@ganguly, work_dir: /home/rickky/GANav-offroad/work_dirs/segnav_cfg
+2024-03-31 22:52:07,857 - mmseg - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) PolyLrUpdaterHook                  
+(NORMAL      ) CheckpointHook                     
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) PolyLrUpdaterHook                  
+(LOW         ) IterTimerHook                      
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) PolyLrUpdaterHook                  
+(LOW         ) IterTimerHook                      
+(LOW         ) EvalHook                           
+ -------------------- 
+after_train_iter:
+(ABOVE_NORMAL) OptimizerHook                      
+(NORMAL      ) CheckpointHook                     
+(LOW         ) IterTimerHook                      
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) CheckpointHook                     
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_epoch:
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_epoch:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_run:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+2024-03-31 22:52:07,857 - mmseg - INFO - workflow: [('train', 1)], max: 240000 iters
+2024-03-31 22:52:07,857 - mmseg - INFO - Checkpoints will be saved to /home/rickky/GANav-offroad/work_dirs/segnav_cfg by HardDiskBackend.
