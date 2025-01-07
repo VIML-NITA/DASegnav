@@ -1,11 +1,5 @@
 # SegNav:
 
-<img src="./resources/video.gif" width="560">
-
-
-<img src="./resources/cover.png" width="700">
-
-
 # Environment
 
 
@@ -101,14 +95,14 @@ Replease [x] with 4 or 6, to generated data with 4 annotation groups or 6 annota
 
 To train a model on RUGD datasets with our methods on 6 groups:
 ```
-python ./tools/train.py ./configs/ours/ganav_group6_rugd.py
+python ./tools/train.py ./configs/ours/segnav_group6_rugd.py
 ```
 
 Please modify `./configs/ours/*` to play with your model and read `./tools/train.py` for more details about training options.
 
 To train a model on multiple GPUs(RUGD, 6 groups, 2 GPUs):
 ```
-./tools/dist_train.sh ./configs/ours/ganav_group6_rugd.py 2
+./tools/dist_train.sh ./configs/ours/segnav_group6_rugd.py 2
 ```
 
 ## Testing
@@ -116,8 +110,8 @@ To train a model on multiple GPUs(RUGD, 6 groups, 2 GPUs):
 An example to evaluate our method with 6 groups on RUGD datasets with mIoU metrics:
 
 ```
-python ./tools/test.py ./trained_models/rugd_group6/ganav_rugd_6.py \
-          ./trained_models/rugd_group6/ganav_rugd_6.pth --eval=mIoU
+python ./tools/test.py ./trained_models/rugd_group6/segnav_rugd_6.py \
+          ./trained_models/rugd_group6/segnav_rugd_6.pth --eval=mIoU
 ```
 Please read `./tools/test.py` for more details.
 
