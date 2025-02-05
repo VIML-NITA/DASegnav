@@ -2,7 +2,7 @@
 
 ![Alt text](segmented.jpeg?raw=true "Title")
 
-# SegNav:
+# SegNav Architecture:
 
 ![Alt text](architec.jpeg?raw=true "Title")
 
