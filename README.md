@@ -1,10 +1,13 @@
-# SegNav:
+# Off-road Terrain Segmentation by Spatial-Attention Model for Autonomous Drivable Path Detection
 
 ![Alt text](segmented.jpeg?raw=true "Title")
+
+# SegNav:
+
 ![Alt text](architec.jpeg?raw=true "Title")
 
 
-# Environment
+# Environment Setup
 
 
 ### Step 1: Create Conda Environment
@@ -34,14 +37,6 @@ pip install einops prettytable
 pip install -e . 
 ```
 
-
-# Get Started
-
-In this section, we explain the data generation process and how to train and test our network.
-
-## Data Processing
-
-To be able to run our network, please follow those steps for generating processed data.
 
 ### Dataset Download: 
 
@@ -119,7 +114,6 @@ python ./tools/test.py ./trained_models/rugd_group6/segnav_rugd_6.py \
 ```
 Please read `./tools/test.py` for more details.
 
-<!-- To repreduce the papers results, please refer `./trained_models` folder. Please download the trained model [here](https://drive.google.com/drive/folders/1PYn_kT0zBGOIRSaO_5Jivaq3itrShiPT?usp=sharing). -->
 
 
 
