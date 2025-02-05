@@ -1,7 +1,7 @@
 # SegNav:
 
-![Alt text](relative%20/segmented.jpeg?raw=true "Title")
-![Alt text](relative%20/architec.jpeg?raw=true "Title")
+![Alt text](relative%20segmented.jpeg?raw=true "Title")
+![Alt text](relative%20architec.jpeg?raw=true "Title")
 
 
 # Environment
