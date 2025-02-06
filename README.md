@@ -1,4 +1,4 @@
-# Off-road Terrain Segmentation by Spatial-Attention Model for Autonomous Drivable Path Detection
+# SegNav: Spatial-Attention Segmentation of Off Road Terrain for Autonomous Drivable Path Detection
 
 ![Alt text](segmented.jpeg?raw=true "Title")
 
